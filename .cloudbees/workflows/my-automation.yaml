@@ -1,0 +1,26 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: My automation
+on:
+  push:
+    branches:
+      - "**"
+jobs:
+  build:
+    steps:
+      - name: Say hello
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: |
+          echo "hello world"
+  TestAutomation:
+    environment: Test Env
+    steps:
+      - uses: cloudbees-io/s3-upload-object@v1
+        name: Testing Step 1
+        with:
+          bucket-name: Test Upload
+          file-path: /test/test
+          s3-path: var/www/
+    needs:
+      - build
